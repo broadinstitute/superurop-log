@@ -3,3 +3,6 @@
 # Datasets
 massachusetts-buildings-dataset/
 **/**/dataset
+
+# neptune
+.neptune
