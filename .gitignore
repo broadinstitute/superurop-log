@@ -1,2 +1,7 @@
 # Datasets
 massachusetts-buildings-dataset/
+
+# neptune
+.neptune
+
+.DS_Store
