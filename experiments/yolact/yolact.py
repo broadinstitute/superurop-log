@@ -110,10 +110,7 @@ class Protonet(nn.Module) :
         
         return out
 
-#proto_out : [n, 32, 138, 138]
-coef_dim=proto_out.shape[1]
-num_classes=81
-aspect_ratios: [1, 1 / 2, 2]
+
 class PredictionModule(nn.Module):
     def __init__(self, in_channels, coef_dim):
         super().__init__()
