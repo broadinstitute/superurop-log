@@ -1,0 +1,11 @@
+{"obj": {"type": "AssignString", "path": ["sys", "name"], "value": "Untitled"}, "version": 1}
+{"obj": {"type": "AssignString", "path": ["sys", "description"], "value": ""}, "version": 2}
+{"obj": {"type": "AssignString", "path": ["monitoring", "7e8cb4a9", "hostname"], "value": "Eddys-MacBook-Pro.local"}, "version": 3}
+{"obj": {"type": "AssignString", "path": ["sys", "hostname"], "value": "Eddys-MacBook-Pro.local"}, "version": 4}
+{"obj": {"type": "AssignString", "path": ["monitoring", "7e8cb4a9", "pid"], "value": "70868"}, "version": 5}
+{"obj": {"type": "AssignString", "path": ["monitoring", "7e8cb4a9", "tid"], "value": "8169083648"}, "version": 6}
+{"obj": {"type": "AssignBool", "path": ["sys", "failed"], "value": false}, "version": 7}
+{"obj": {"type": "AssignFloat", "path": ["parameters", "learning_rate"], "value": 0.0001}, "version": 8}
+{"obj": {"type": "AssignInt", "path": ["parameters", "batch_size"], "value": 16}, "version": 9}
+{"obj": {"type": "AssignInt", "path": ["parameters", "epochs"], "value": 10}, "version": 10}
+{"obj": {"type": "AssignString", "path": ["parameters", "optimizer"], "value": "Adam"}, "version": 11}
