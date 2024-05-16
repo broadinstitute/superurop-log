@@ -392,7 +392,7 @@ class PredictionHeadRegression(nn.Module):
 
 
 class ProtonetRegression(nn.Module):
-    def __init__(self, in_channels, num_prototypes):
+    def __init__(self, in_channels, out_channels):
         super().__init__()
 
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
@@ -617,8 +617,16 @@ class Yolact(nn.Module):
                 proto_out = self.proto_net(proto_x)
 
                 print("#"*5, proto_out.size())
+                proto_out_shape = proto_out.size()
+                proto_channels = proto_out_shape[1]
+                protonet_regression = ProtonetRegression(in_channels=proto_channels, out_channels=proto_channels)
+                proto_out = protonet_regression(proto_out)
+                print("*"*5, proto_out.size())
 
                 proto_out = cfg.mask_proto_prototype_activation(proto_out)
+
+                # pass proto out through regression module
+
 
                 if cfg.mask_proto_prototypes_as_features:
                     # Clone here because we don't want to permute this, though idk if contiguous makes this unnecessary
