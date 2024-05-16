@@ -376,9 +376,9 @@ class FastMaskIoUNet(ScriptModuleWrapper):
 
 
 class PredictionHeadRegression(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels):
         super().__init__()
-        self.mask_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, padding=1)
+        self.mask_conv = nn.Conv2d(in_channels=in_channels, out_channels=in_channels, kernel_size=1, stride=1, padding=0)
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x):
@@ -386,10 +386,10 @@ class PredictionHeadRegression(nn.Module):
 
 
 class ProtonetRegression(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels):
         super().__init__()
 
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
+        self.conv = nn.Conv2d(in_channels=in_channels, out_channels=in_channels, kernel_size=3, padding=1)
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x):
@@ -613,7 +613,7 @@ class Yolact(nn.Module):
                 # print("#"*5, proto_out.size())
                 proto_out_shape = proto_out.size()
                 proto_channels = proto_out_shape[1]
-                protonet_regression = ProtonetRegression(in_channels=proto_channels, out_channels=proto_channels)
+                protonet_regression = ProtonetRegression(in_channels=proto_channels)
                 proto_out = protonet_regression(proto_out)
                 # print("*"*5, proto_out.size())
 
@@ -661,7 +661,7 @@ class Yolact(nn.Module):
                 p_mask_shape = p_mask.size()
                 p_mask_channels = p_mask_shape[1]
                 print("#"*5, p_mask.size())
-                prediction_head_regression = PredictionHeadRegression(in_channels=p_mask_channels, out_channels=p_mask_channels)
+                prediction_head_regression = PredictionHeadRegression(in_channels=p_mask_channels)
                 p_mask_out = prediction_head_regression(p_mask)
                 print("*", p_mask_out.size())
                 for k, v in p.items():
