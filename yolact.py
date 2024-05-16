@@ -378,7 +378,7 @@ class FastMaskIoUNet(ScriptModuleWrapper):
 class PredictionHeadRegression(nn.Module):
     def __init__(self, in_channels):
         super().__init__()
-        self.mask_conv = nn.Conv2d(in_channels=in_channels, out_channels=in_channels, kernel_size=1, stride=1, padding=0)
+        self.mask_conv = nn.Conv1d(in_channels=in_channels, out_channels=in_channels, kernel_size=1, stride=1, padding=0)
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x):
