@@ -663,8 +663,8 @@ class Yolact(nn.Module):
                     pred_layer.parent = [self.prediction_layers[0]]
 
                 p = pred_layer(pred_x)
-
-                print("#"*5, p.keys())
+                p_mask = p["mask"]
+                print("#"*5, p_mask.size())
 
                 for k, v in p.items():
                     pred_outs[k].append(v)
