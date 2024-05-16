@@ -376,19 +376,13 @@ class FastMaskIoUNet(ScriptModuleWrapper):
 
 
 class PredictionHeadRegression(nn.Module):
-    def __init__(self, in_channels, num_classes, num_anchors, num_prototypes):
+    def __init__(self, in_channels, out_channels):
         super().__init__()
-
-        self.num_anchors = num_anchors
-        self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=num_classes*num_anchors, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(in_channels=in_channels, out_channels=4*num_anchors, kernel_size=3, padding=1)
-        self.conv3 = nn.Conv2d(in_channels=in_channels, out_channels=num_prototypes*num_anchors, kernel_size=3, padding=1)
+        self.mask_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, padding=1)
         self.relu = nn.ReLU(inplace=True)
 
-    def forward(self, x, y, z):
-        return (self.relu(self.conv1(x)),
-               self.relu(self.conv2(y)),
-               self.relu(self.conv3(z)))
+    def forward(self, x):
+        return self.relu(self.mask_conv(x))
 
 
 class ProtonetRegression(nn.Module):
@@ -664,8 +658,12 @@ class Yolact(nn.Module):
 
                 p = pred_layer(pred_x)
                 p_mask = p["mask"]
+                p_mask_shape = p_mask.size()
+                p_mask_channels = p_mask_shape[2]
                 print("#"*5, p_mask.size())
-
+                prediction_head_regression = PredictionHeadRegression(in_channels=p_mask_channels, out_channels=p_mask_channels)
+                p_mask_out = prediction_head_regression(p_mask)
+                print("*", p_mask_out.size())
                 for k, v in p.items():
                     pred_outs[k].append(v)
 
