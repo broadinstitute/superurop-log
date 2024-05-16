@@ -37,7 +37,7 @@ class Concat(nn.Module):
 
         self.nets = nn.ModuleList(nets)
         self.extra_params = extra_params
-    
+
     def forward(self, x):
         # Concat each along the channel dimension
         return torch.cat([net(x) for net in self.nets], dim=1, **self.extra_params)
@@ -375,6 +375,32 @@ class FastMaskIoUNet(ScriptModuleWrapper):
         return maskiou_p
 
 
+class PredictionHeadRegression(nn.Module):
+    def __init__(self, in_channels, num_classes, num_anchors, num_prototypes):
+        super().__init__()
+
+        self.num_anchors = num_anchors
+        self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=num_classes*num_anchors, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=in_channels, out_channels=4*num_anchors, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(in_channels=in_channels, out_channels=num_prototypes*num_anchors, kernel_size=3, padding=1)
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, x, y, z):
+        return (self.relu(self.conv1(x)),
+               self.relu(self.conv2(y)),
+               self.relu(self.conv3(z)))
+
+
+class ProtonetRegression(nn.Module):
+    def __init__(self, in_channels, num_prototypes):
+        super().__init__()
+
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        return self.relu(self.conv(x))
+
 
 class Yolact(nn.Module):
     """
@@ -415,7 +441,7 @@ class Yolact(nn.Module):
                 self.num_grids = 0
 
             self.proto_src = cfg.mask_proto_src
-            
+
             if self.proto_src is None: in_channels = 3
             elif cfg.fpn is not None: in_channels = cfg.fpn.num_features
             else: in_channels = self.backbone.channels[self.proto_src]
@@ -560,6 +586,9 @@ class Yolact(nn.Module):
 
                 module.weight.requires_grad = enable
                 module.bias.requires_grad = enable
+
+    def freeze(self):
+        pass
     
     def forward(self, x):
         """ The input should be of size [batch_size, 3, img_h, img_w] """
@@ -586,6 +615,9 @@ class Yolact(nn.Module):
                     proto_x = torch.cat([proto_x, grids], dim=1)
 
                 proto_out = self.proto_net(proto_x)
+
+                print("#"*5, proto_out.size())
+
                 proto_out = cfg.mask_proto_prototype_activation(proto_out)
 
                 if cfg.mask_proto_prototypes_as_features:
