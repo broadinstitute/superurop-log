@@ -582,7 +582,10 @@ class Yolact(nn.Module):
                 module.bias.requires_grad = enable
 
     def freeze(self):
-        pass
+        for module in self.modules():
+            if not isinstance(module, PredictionHeadRegression) and not isinstance(module, ProtonetRegression):
+                for param in module.parameters():
+                    param.requires_grad = False
     
     def forward(self, x):
         """ The input should be of size [batch_size, 3, img_h, img_w] """
