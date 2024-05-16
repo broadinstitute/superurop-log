@@ -659,7 +659,7 @@ class Yolact(nn.Module):
                 p = pred_layer(pred_x)
                 p_mask = p["mask"]
                 p_mask_shape = p_mask.size()
-                p_mask_channels = p_mask_shape[2]
+                p_mask_channels = p_mask_shape[1]
                 print("#"*5, p_mask.size())
                 prediction_head_regression = PredictionHeadRegression(in_channels=p_mask_channels, out_channels=p_mask_channels)
                 p_mask_out = prediction_head_regression(p_mask)
