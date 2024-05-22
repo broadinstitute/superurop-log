@@ -678,6 +678,8 @@ class Yolact(nn.Module):
             pred_outs['proto'] = proto_out
 
         if self.training:
+            # freeze all but regression modules
+            self.freeze()
             # For the extra loss functions
             if cfg.use_class_existence_loss:
                 pred_outs['classes'] = self.class_existence_fc(outs[-1].mean(dim=(2, 3)))
